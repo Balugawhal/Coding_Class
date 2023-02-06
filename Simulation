@@ -1,0 +1,21 @@
+import random
+
+iterations = 10000
+total_tosses = 0
+current_iteration = 0
+
+while current_iteration < iterations:
+    count = 0
+    heads_count = 0
+    while heads_count < 3:
+        coin = random.choice(["heads", "tails"])
+        count += 1
+        if coin == "heads":
+            heads_count += 1
+        else:
+            heads_count = 0
+    total_tosses += count
+    current_iteration += 1
+
+average_tosses = total_tosses / iterations
+print("The average number of tosses to get 3 heads in a row is", average_tosses)
