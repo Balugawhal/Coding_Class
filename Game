@@ -1,0 +1,357 @@
+#In this game, the goal is to find 2 parts of a key in order to escape the forest.
+#The 2 parts are randomly generated and can appear anywhere on the map
+#To win, traverse the map, and search for the key, all while keeping your hunger and thirst up
+#And making the right decisions along the way
+
+#Title: Enchanted Forest
+
+#Setting: A mysterious forest
+
+#Global variables:
+    #key1Location(Determines the location of the first key part)
+    #key2Location(Determines the location of the second key part)
+    #Direction(Determines the right direction in cave sequence)
+    #thrist(Hydration level)
+    #hunger(Food level)
+    #health(Amount of health until you die)
+    #keypart1(Whether or not player has the first key part)
+    #keypart2(Whether or not player has the second key part)
+    #hasKey(Whether or not player has both key parts)
+
+#Tip: When playing the game, make sure to expand the terminal upwards, as there is a large display
+
+#Import Modules
+
+import random
+
+#Define Functions
+
+def start():
+    global key1Location
+    global key2Location
+    global Direction
+    print('You wake up in the middle of a forest clearing. Right in front of you is a Mysterious door made of stone.')
+    print('To your right you see a murky lake, and to your left, you see a cave. Behind you is a hollow tree and what')
+    print('looks to be a termite nest.\n')
+    KeyGeneration()
+    LeftorRight()
+    ForestClearing()
+
+def KeyGeneration():
+    global key1Location
+    global key2Location
+    key1Location = random.randint(1, 4)
+    key2Location = random.randint(1, 4)
+    if key1Location == key2Location:
+        KeyGeneration()
+
+def Status():
+    global thirst
+    global hunger
+    global health
+    thirst = str(thirst)
+    hunger = str(hunger)
+    health = str(health)
+    print('Health:',health)
+    print('Hunger:',hunger)
+    print('Thirst:', thirst)
+    print('')
+    thirst = int(thirst)
+    hunger = int(hunger)
+    health = int(health)
+
+def LeftorRight():
+    global Direction
+    Direction = random.randint(1, 2)
+
+def Check():
+    global thirst
+    global hunger
+    global health
+    if thirst < 1:
+        Die()
+    elif hunger < 1:
+        Die()
+    elif health < 1:
+        Die()
+
+def Die():
+    print('You died\n')
+    print('Do you want to try again? Yes/No')
+    response = input()
+    if response == ('Yes'):
+        start()
+    else:
+        exit()
+
+def Win():
+    print('______________________________________________________________________________________________________________________')
+    print('Congratulations, you have escaped the forest\n')
+    print('Do you want to play again? Yes/No')
+    action = input()
+    if action == ('Yes'):
+        start()
+    elif action == ('No'):
+        exit()
+    else:
+        print('Invalid Input')
+        Win()
+
+def ForestClearing():
+    global key1Location
+    global key2Location
+    global thirst
+    global hunger
+    print('______________________________________________________________________________________________________________________')
+    Status()
+    print('Do you want to:\n1. Investigate mysterious door\n2. Investigate the lake\n3. Investigate the termite nest\n4. Investigate the Hollow tree\n5. Investigate the cave\n')
+    action = input()
+    if action == ('1'):
+        MysteriousDoor()
+    elif action == ('2'):
+        Lake()
+    elif action == ('3'):
+        TermiteNest()
+    elif action == ('4'):
+        HollowTree()
+    elif action == ('5'):
+        Cave()
+    else:
+        print('Invalid Input')
+        ForestClearing()
+
+def MysteriousDoor():
+    global hasKey
+    global thirst
+    global hunger
+    global keypart1
+    global keypart2
+    if keypart2 and keypart1 == True:
+        hasKey = True
+    print('______________________________________________________________________________________________________________________')
+    Status()
+    if hasKey is False:
+        print('The door seems to be locked\n')
+        print('Press enter to return to forest clearing')
+        input()
+        ForestClearing()
+    elif hasKey is True:
+        print('You put the key into the lock and turn it. When you step through, it magically returns you\n to your home, you have escaped!')
+        Win()
+
+def Lake():
+    global key1Location
+    global key2Location
+    global keypart1
+    global keypart2
+    global thirst
+    global hunger
+    global health
+    print('______________________________________________________________________________________________________________________')
+    Status()
+    print('You go to the shore of the lake. Because of the dirt and mud in it,\nyou can barely see below the surface\n')
+    print('Would you like to:\n1. Drink from the lake\n2. Swim in the lake\n3. Return to forest clearing\n')
+    action = input()
+    if action == ('1'):
+        print('______________________________________________________________________________________________________________________')
+        print('You drink from the murky waters, and take a small amount of damage.\n')
+        thirst = thirst + 10
+        health = health - 5
+        Check()
+        Lake()
+    elif action == ('2'):
+        if key1Location == 1:
+            print('______________________________________________________________________________________________________________________')
+            print('As you swim in the water, you feel an object beneath your feet. Upon closer\ninspection, you realise it is half of a key')
+            keypart1 = True
+            Lake()
+        elif key2Location == 1:
+            print('______________________________________________________________________________________________________________________')
+            print('As you swim in the water, you feel an object beneath your feet. Upon closer\ninspection, you realise it is half of a key')
+            keypart2 = True
+            Lake()
+        else:
+            print('______________________________________________________________________________________________________________________')
+            print('You take a dip in the murky waters and lose some health.\n')
+            health = health - 10
+            Check()
+            Lake()
+    elif action == ('3'):
+        ForestClearing()
+    else:
+        print('______________________________________________________________________________________________________________________')
+        print('Invalid Input')
+        Lake()
+
+def TermiteNest():
+    global hunger
+    global health
+    global thirst
+    global key1Location
+    global key2Location
+    global keypart1
+    global keypart2
+    print('______________________________________________________________________________________________________________________')
+    Status()
+    print('You walk up to a large mount of rock. Crawling over it is hundreds of termites.')
+    print('Do you:\n1. Try to eat a termite\n2. Search inside the termite nest\n3. Return to forest clearing\n')
+    action = input()
+    if action ==('1'):
+        print('______________________________________________________________________________________________________________________')
+        print('You pick up a termite and eat it. Disgusting. You lose a bit of health')
+        hunger = hunger + 5
+        health = health - 5
+        Status()
+        Check()
+        TermiteNest()
+    elif action == ('2'):
+        print('______________________________________________________________________________________________________________________')
+        if key1Location == 2:
+            print('You stick your hand in, and pull out what appears to be half of a key.')
+            keypart1 = True
+            TermiteNest()
+        elif key2Location == 2:
+            print('You stick your hand in, and pull out what appears to be half of a key.')
+            keypart2 = True
+            TermiteNest()
+        else:
+            print('You stick your hand in the termites nest and find... nothing. You lose some health')
+            health = health - 10
+            Status()
+            Check()
+            TermiteNest()
+    elif action == ('3'):
+        ForestClearing()
+    else:
+        print('______________________________________________________________________________________________________________________')
+        print('Invalid Input')
+        TermiteNest()
+
+def HollowTree():
+    global keypart1
+    global keypart2
+    global hunger
+    global thirst
+    print('______________________________________________________________________________________________________________________')
+    Status()
+    print('You walk up to the hollow tree. Do you:')
+    print('1. Search inside the tree\n2. Return to forest clearing\n')
+    action = input()
+    if action == ('1'):
+        print('______________________________________________________________________________________________________________________')
+        if key1Location == 3:
+            print('You stick your hand in, and pull out what appears to be half of a key.')
+            keypart1 = True
+            HollowTree()
+        elif key2Location == 3:
+            print('You stick your hand in, and pull out what appears to be half of a key.')
+            keypart2 = True
+            HollowTree()
+        else:
+            print('You stick your hand in and find... nothing')
+            HollowTree()
+    elif action == ('2'):
+        ForestClearing()
+    else:
+        print('______________________________________________________________________________________________________________________')
+        print('Invalid Input')
+    HollowTree()
+
+def Cave():
+    global Direction
+    global thirst
+    global hunger
+    global health
+    global keypart2
+    global keypart1
+    global key1Location
+    global key2Location
+    print('______________________________________________________________________________________________________________________')
+    Status()
+    Check()
+    thirst = thirst - 40
+    hunger = hunger - 20
+    print('You walk into the cave, and come face to face with a wolf. Terrified, you run deeper into the cave,\nbut come to an intersection do you go:')
+    print('1. Right\n2. Left\n')
+    direction = input()
+    if direction == ('2'):
+        if Direction == 1:
+            print('______________________________________________________________________________________________________________________')
+            print('You run into a dead end and die')
+            Die()
+        elif Direction == 2:
+            print('______________________________________________________________________________________________________________________')
+            print('You dash to the left, and come to a sheer cliff. Next to you are some vines that you could climb up, and below you is a flowing river\nDo you:')
+            print('1. Climb up the vines\n2. Jump into the river')
+            action = input()
+            if action == ('1'):
+                print('______________________________________________________________________________________________________________________')
+                print('You climb up the vines, and find an eagle nest on the cliff. Do you:')
+                print('1. Investigate the eagle nest\n2. Jump down into the river')
+                action = input()
+                if action == ('1'):
+                    print('______________________________________________________________________________________________________________________')
+                    if key1Location == 4:
+                        print('You run to the eagle nest, and find a half of a key. When you pick it up, a giant eagle swoops\ndown and lifts you back into the forest clearing')
+                        keypart1 = True
+                    elif key2Location == 4:
+                        print('You run to the eagle nest, and find a half of a key. When you pick it up, a giant eagle swoops\ndown and lifts you back into the forest clearing')
+                        keypart2 = True
+                    else:
+                        print('You run to the eagle nest. When you step foot inside, you get picked up by a giant eagle\nwho returns you to the forsest clearing')
+                        ForestClearing()
+    if direction == ('1'):
+        if Direction == 2:
+            print('You run into a dead end and die')
+            Die()
+        elif Direction == 1:
+            print('______________________________________________________________________________________________________________________')
+            print('You dash to the right, and come to a sheer cliff. Next to you are some vines that you could climb up, and below you is a flowing river\nDo you:')
+            print('1. Climb up the vines\n2. Jump into the river')
+            action = input()
+            if action == ('1'):
+                print('______________________________________________________________________________________________________________________')
+                print('You climb up the vines, and find an eagle nest on the cliff. Do you:')
+                print('1. Investigate the eagle nest\n2. Jump down into the river')
+                action = input()
+                if action == ('1'):
+                    print('______________________________________________________________________________________________________________________')
+                    if key1Location == 4:
+                        print('You run to the eagle nest, and find a half of a key. When you pick it up, a giant eagle swoops\ndown and lifts you back into the forest clearing')
+                        keypart1 = True
+                    elif key2Location == 4:
+                        print('You run to the eagle nest, and find a half of a key. When you pick it up, a giant eagle swoops\ndown and lifts you back into the forest clearing')
+                        keypart2 = True
+                    else:
+                        print('You run to the eagle nest. When you step foot inside, you get picked up by a giant eagle\nwho returns you to the forsest clearing')
+                        ForestClearing()
+                elif action == ('2'):
+                    print('______________________________________________________________________________________________________________________')
+                    print('You jump into the river below, then realise that falling into water does not actually break your fall.')
+                    Die()
+                else:
+                    print('______________________________________________________________________________________________________________________')
+                    print('You could not for a cohesive thought, and got caught')
+                    Die()
+            elif action == ('2'):
+                print('______________________________________________________________________________________________________________________')
+                print('You jump into the river below, then realise that falling into water does not actually break your fall.')
+                Die()
+            else:
+                print('______________________________________________________________________________________________________________________')
+                print('You could not for a cohesive thought, and got caught')
+                Die()
+    else:
+        print('______________________________________________________________________________________________________________________')
+        print('You could not for a cohesive thought, and got caught')
+        Die()
+
+#Main
+
+keypart1 = False
+keypart2 = False
+hasKey = False
+health = 100
+hunger = 100
+thirst = 100
+start()
